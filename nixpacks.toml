@@ -1,0 +1,2 @@
+[phases.setup]
+mixPkgs = ['sudo apt-get install libmagic1']

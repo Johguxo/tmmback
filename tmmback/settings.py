@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'tmmback.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 #mysql://root:b6DoQJa1EfVHbSwXsciK@containers-us-west-157.railway.app:7550/railway
-DATABASES = {
+"""DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.sqlite3',
         #'NAME': BASE_DIR / 'db.sqlite3',
@@ -93,8 +93,18 @@ DATABASES = {
         'HOST': 'containers-us-west-157.railway.app',
         'PORT': '7550',
     }
-}
+}"""
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '1Acwjkl6wpXfChxCq0gM',
+        'HOST': 'containers-us-west-79.railway.app',
+        'PORT': '7053',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

@@ -1,7 +1,5 @@
 from django.db import models
 
-from cloudinary_storage.storage import VideoMediaCloudinaryStorage
-
 from django.contrib.auth.models import User
 # Create your models here.
 
@@ -48,7 +46,7 @@ class Info(models.Model):
     subsection  = models.ForeignKey(SubSection,on_delete=models.CASCADE,blank=True,null=True)
     content = models.TextField(default='')
     image = models.ImageField(upload_to='images_tmm/', blank=True)
-    video_link = models.CharField(max_length=200, blank=True)
+    video_link = models.CharField(max_length=300, blank=True)
 
     def __str__(self):
         if self.section:
@@ -62,7 +60,7 @@ class IncidentsMachine(models.Model):
     machine = models.ForeignKey(Machine,on_delete=models.CASCADE)
     content = models.TextField(default='')
     image = models.ImageField(upload_to='images_tmm/', blank=True)
-    video_link = models.CharField(max_length=200, blank=True)
+    video_link = models.CharField(max_length=300, blank=True)
 
     def __str__(self):
         return self.machine.title

@@ -1,2 +1,2 @@
-[phases.setup]
-cmd = 'sudo apt-get install libmagic1'
+[phases.install]
+cmds = ['sudo apt-get install libmagic1']

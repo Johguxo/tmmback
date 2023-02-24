@@ -1,2 +1,2 @@
 [phases.setup]
-nixPkgs = ['sudo apt-get install libmagic1']
+cmd = 'sudo apt-get install libmagic1'

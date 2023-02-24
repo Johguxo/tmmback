@@ -2,5 +2,5 @@
 nixPkgs = ['python39','postgresql','gcc','ocamlPackages.magic']
 
 [phases.install]
-aptPkgs = ['libmagic1']
+aptPkgs = ['libmagic-dev','libmagic1']
 cmds = ['python -m venv /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt ']

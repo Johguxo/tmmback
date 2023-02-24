@@ -45,7 +45,9 @@ class SubSection(models.Model):
 class Info(models.Model):
     section = models.ForeignKey(Section,on_delete=models.CASCADE,blank=True,null=True)
     subsection  = models.ForeignKey(SubSection,on_delete=models.CASCADE,blank=True,null=True)
-    content = models.TextField(default='')
+    title = models.CharField(max_length=300, blank=True)
+    subtitle = models.CharField(max_length=300, blank=True)
+    content = models.TextField(default='', blank=True)
     image = CloudinaryField('image')
     video_link = models.CharField(max_length=300, blank=True)
 

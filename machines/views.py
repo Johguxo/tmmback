@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 
-from machines.models import Machine, UserMachine, Section, SubSection
-from machines.serializers import MachineSerializer, SectionSerializer, SubSectionSerializer
+from machines.models import Machine, Info, UserMachine, Section, SubSection
+from machines.serializers import MachineSerializer, InfoSerializer, SectionSerializer, SubSectionSerializer
 
 class MachineAPI(ModelViewSet):
     """
@@ -47,7 +47,7 @@ class SectionAPI(ModelViewSet):
 
 class SubSectionAPI(ModelViewSet):
     """
-      Get sections of machine
+      Get sub sections of machine
     """
     permission_classes = [AllowAny]
     serializer_class = SubSectionSerializer
@@ -57,4 +57,24 @@ class SubSectionAPI(ModelViewSet):
     def get_queryset(self):
         if 'id_section' in self.request.GET:
             return SubSection.objects.filter(section_id=self.request.GET['id_section'])
+        return ModelViewSet.get_queryset(self)
+    
+  
+class InfoAPI(ModelViewSet):
+    """
+      Get info of section or subsection
+    """
+    permission_classes = [AllowAny]
+    serializer_class = InfoSerializer
+    queryset = Info.objects.all()
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        if 'type' in self.request.GET and 'id_model' in self.request.GET:
+            id_model = self.request.GET['id_model']
+            type = self.request.GET['type']
+            if type == 'section':
+              return Info.objects.filter(section_id=id_model)
+            else:
+              return Info.objects.filter(subsection_id=id_model)
         return ModelViewSet.get_queryset(self)

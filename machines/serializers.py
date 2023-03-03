@@ -1,17 +1,25 @@
 from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
+from rest_framework.fields import SerializerMethodField
 
 from django.contrib.auth.models import User
 from machines.models import Machine, Section, SubSection
-
 
 
 class MachineSerializer(ModelSerializer):
     """
       get machine data
     """
+    url_image = SerializerMethodField()
+
     class Meta:
         model = Machine
-        fields = '__all__'
+        fields = ('id','title','description','url_image')
+    
+    def get_url_image(self, obj):
+        url_image = None
+        if obj.image:
+          url_image = f"https://res.cloudinary.com/johguxo-gonzales/{obj.image}"
+        return url_image
 
 
 class SectionSerializer(ModelSerializer):

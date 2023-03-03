@@ -16,13 +16,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
-
-import machines.views as machines
+from django.urls import path, include, re_path
 
 urlpatterns = [
     #Admin funcionality
     path('admin/', admin.site.urls),
+    re_path(r'^api/machine/', include('machines.urls'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

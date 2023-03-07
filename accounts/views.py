@@ -33,3 +33,13 @@ class AuthenticateUserAPI(APIView):
                                 password=password)
           print(user)
         return Response(response_error_dict)
+
+
+def index(request):
+  """ View function for home page of site """
+  print("asdasd")
+  context = {
+    'num_machines': 5,
+  }
+
+  return render(request, 'index.html', context=context)

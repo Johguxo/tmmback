@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #'cloudinary_storage',
     'cloudinary',
     'rest_framework',
+    'oauth2_provider',
     'machines',
     'forms',
     'accounts'

@@ -69,4 +69,4 @@ class UserAchievement(models.Model):
   achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
 
   def __str__(self):
-    self.user.get_full_name() + ' - ' + self.achievement.name
+    return self.user.get_full_name() + ' - ' + self.achievement.name

@@ -53,9 +53,9 @@ class Info(models.Model):
 
     def __str__(self):
         if self.section:
-            return (self.section.name)
+            return '[' + self.section.machine.title + '] Section: ' + (self.section.name) + ' - ' + self.title
         elif self.subsection:
-            return (self.subsection.name)
+            return '[' + self.subsection.section.machine.title + '] Subsection: ' + (self.subsection.name) + ' - ' + self.title
         else:
             return 'No esta asociado'
 

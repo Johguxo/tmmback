@@ -1,10 +1,13 @@
 import logging
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
 from django.contrib.auth.models import User
 from accounts.models import Profile
+from .forms import NewUserForm
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -35,11 +38,34 @@ class AuthenticateUserAPI(APIView):
         return Response(response_error_dict)
 
 
-def index(request):
+def register(request):
   """ View function for home page of site """
-  print("asdasd")
+  
   context = {
     'num_machines': 5,
   }
 
-  return render(request, 'index.html', context=context)
+  if request.method == "POST":
+    formData = {
+      'csrfmiddlewaretoken': request.POST['csrfmiddlewaretoken'],
+      'username': request.POST['code'],
+      'email': request.POST['email'],
+      'first_name': request.POST['first_name'],
+      'last_name': request.POST['last_name'],
+      'password1': request.POST['password1'],
+      'password2': request.POST['password2']
+    }
+    form = NewUserForm(formData)
+    if form.is_valid():
+      user = form.save()
+      Profile.objects.create(user=user,code=request.POST['code'])
+      login(request,user)
+      messages.success(request, "Registration successful." )
+      return redirect("homepage")
+    messages.error(request, "Unsuccessful registration. Invalid information.")
+
+  return render(request, 'register.html', context=context)
+
+
+def home(request):
+   return render(request, 'home.html')

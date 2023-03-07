@@ -9,6 +9,7 @@ from . import views
 urlpatterns = [
     #path('', views.index, name='index'),
     path('login-api/', views.AuthenticateUserAPI.as_view()),
-    path('home/', views.index,name='index')
+    path('register/', views.register,name='register'),
+    path('home/', views.home,name='homepage'),
     #path('register-api/', views.RegisterUserAPI.as_view()),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

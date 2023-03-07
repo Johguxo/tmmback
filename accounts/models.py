@@ -23,6 +23,10 @@ class Profile(models.Model):
   choices_specialists = [
     (0, 'Metalizador'),
     (1, 'Fresador'),
+    (2, 'Tornero'),
+    (3, 'Supervisor'),
+    (4, 'Administrativo'),
+    (5, 'Jefatura'),
   ]
 
   user = models.ForeignKey(User,on_delete=models.CASCADE)

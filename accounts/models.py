@@ -56,7 +56,7 @@ class UserSkill(models.Model):
   skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
 
   def __str__(self):
-    self.user.get_full_name() + ' - ' + self.skill.name
+    return self.user.get_full_name() + ' - ' + self.skill.name
 
 class Achievement(models.Model):
   name = models.CharField(max_length=100,default='')

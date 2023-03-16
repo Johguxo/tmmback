@@ -31,7 +31,7 @@ class Profile(models.Model):
 
   user = models.ForeignKey(User,on_delete=models.CASCADE)
   image = CloudinaryField('image',blank=True, null=True)
-  signature = CloudinaryField('image',blank=True, null=True)
+  signature = CloudinaryField('signature',blank=True, null=True)
   role = models.IntegerField(default=0,choices=choices_roles)
   date_of_birth = models.DateField(default=timezone.now)
   code = models.CharField(max_length=50,null=True,blank=True)

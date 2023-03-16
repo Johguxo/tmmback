@@ -13,12 +13,10 @@ class SectionAdmin(admin.ModelAdmin):
     raw_id_fields = ('machine',)
 class SubSectionAdmin(admin.ModelAdmin):
     raw_id_fields = ('section',)
-class IncidentsMachineAdmin(admin.ModelAdmin):
-    raw_id_fields = ('machine',)
 
 admin.site.register(Machine, MachineAdmin)
 admin.site.register(UserMachine, UserMachineAdmin)
 admin.site.register(Info, InfoAdmin)
 admin.site.register(Section, SectionAdmin)
 admin.site.register(SubSection, SubSectionAdmin)
-admin.site.register(IncidentsMachine, IncidentsMachineAdmin)
+admin.site.register(IncidentsMachine)

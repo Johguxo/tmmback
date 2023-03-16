@@ -9,6 +9,7 @@ from django.contrib import messages
 
 from django.contrib.auth.models import User
 from accounts.models import Profile
+from accounts.serializers import ProfileSerializer
 from .forms import NewUserForm
 
 from rest_framework import status
@@ -132,6 +133,6 @@ class ProfileAPI(ModelViewSet):
       Get all machines
     """
     permission_classes = [AllowAny]
-    serializer_class = Profile
+    serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
     lookup_field = 'id'

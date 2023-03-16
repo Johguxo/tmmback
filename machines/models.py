@@ -20,7 +20,7 @@ class UserMachine(models.Model):
     status = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.user.get_full_name()
+        return self.user.get_full_name() + '[ '+self.machine.title + ' ]'
 
 class Section(models.Model):
     machine = models.ForeignKey(Machine,on_delete=models.CASCADE)
@@ -62,10 +62,11 @@ class Info(models.Model):
             return 'No esta asociado'
 
 class IncidentsMachine(models.Model):
-    machine = models.ForeignKey(Machine,on_delete=models.CASCADE)
+    title = models.CharField(max_length=300, blank=True, default='')
+    subtitle = models.CharField(max_length=300, blank=True)
     content = models.TextField(default='')
     image = CloudinaryField('image')
     video_link = models.CharField(max_length=300, blank=True)
 
     def __str__(self):
-        return self.machine.title
+        return self.title

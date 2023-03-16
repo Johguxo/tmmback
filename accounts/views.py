@@ -1,7 +1,9 @@
 import logging
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.db import IntegrityError
+from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
@@ -13,6 +15,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 from oauth2_provider.models import Application, AccessToken
 from oauth2_provider.contrib.rest_framework.authentication import OAuth2Authentication
 
@@ -66,6 +69,69 @@ def register(request):
 
   return render(request, 'register.html', context=context)
 
+def login_view(request):
+    #Check if the user is logged in
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
+    if request.method == "POST":
+        username = request.POST["username"].lower()
+        password = request.POST["password"]
+        user = authenticate(request, username = username, password = password)
+        # if user authentication success
+        if user is not None:
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            return render(request, "index/login.html", {
+                "message": "Invalid username and/or password"
+            })
+    return render(request, "index/login.html")
+
+def register(request):
+    #Check if the user is logged in
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
+    if request.method == "POST":
+        username = request.POST["username"].lower()
+        password = request.POST["password"]
+        email = request.POST["email"]
+        confirmation = request.POST["confirmation"]
+        #check if the password is the same as confirmation
+        if password != confirmation:
+            return render(request, "index/register.html", {
+                "message": "Passwords must match."
+            })
+        #Checks if the username is already in use
+        if User.objects.filter(email = email).count() == 1:
+            return render(request, "index/register.html", {
+                "message": "Email already taken."
+            })
+        try:
+            user = User.objects.create_user(username = username, password = password, email = email)
+            user.save()
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+        except IntegrityError:
+            return render(request, "index/register.html", {
+                "message": "Username already taken"
+            })
+    return render(request, "index/register.html")
+
+
+def logout_view(request):
+    #Logout the user
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))
+
 
 def home(request):
    return render(request, 'home.html')
+
+class ProfileAPI(ModelViewSet):
+    """
+      Get all machines
+    """
+    permission_classes = [AllowAny]
+    serializer_class = Profile
+    queryset = Profile.objects.all()
+    lookup_field = 'id'

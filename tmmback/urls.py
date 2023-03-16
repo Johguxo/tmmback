@@ -22,7 +22,8 @@ urlpatterns = [
     #Admin funcionality
     path('admin/', admin.site.urls),
     re_path(r'^api/machine/', include('machines.urls')),
-    path('', include('accounts.urls'))
+    path('form/',include('forms.urls')),
+    path('api/', include('accounts.urls'))
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

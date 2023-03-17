@@ -2,7 +2,8 @@ from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializ
 from rest_framework.fields import SerializerMethodField
 
 from django.contrib.auth.models import User
-from accounts.models import Profile
+from accounts.models import Profile, UserAchievement
+from machines.models import UserMachine
 from datetime import datetime
 
 class ProfileSerializer(ModelSerializer):
@@ -16,13 +17,15 @@ class ProfileSerializer(ModelSerializer):
     age = SerializerMethodField()
     role = SerializerMethodField()
     level = SerializerMethodField()
-    specialist= SerializerMethodField()
+    specialist = SerializerMethodField()
+    achievements = SerializerMethodField()
+    machines = SerializerMethodField()
 
 
     class Meta:
         model = Profile
         fields = ('id','data_user','url_image', 'url_signature', 'role', 
-                  'date_of_birth', 'code', 'level', 
+                  'date_of_birth', 'code', 'level', 'achievements', 'machines',
                   'date_of_admission', 'specialist','objectives','age')
         
 
@@ -60,3 +63,20 @@ class ProfileSerializer(ModelSerializer):
       if obj.date_of_birth:
         calculate_age = datetime.now().year - obj.date_of_birth.year
       return calculate_age
+   
+    def get_achievements(self,obj):
+       achievements = []
+       if UserAchievement.objects.filter(user=obj.user).exists():
+          for user_achievement in UserAchievement.objects.filter(user=obj.user):
+             achievements.append({
+                'name': user_achievement.achievement.name
+             })
+       return achievements
+    def get_machines(self, obj):
+       machines = []
+       if UserMachine.objects.filter(user=obj.user).exists():
+          for user_machine in UserMachine.objects.filter(user=obj.user):
+             machines.append({
+                'title': user_machine.machine.title
+             })
+       return machines

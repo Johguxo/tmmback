@@ -8,6 +8,10 @@ from django.utils import timezone
 class Choices(models.Model):
     choice = models.CharField(max_length=5000)
     is_answer = models.BooleanField(default=False)
+    creation_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.choice
 
 class Questions(models.Model):
     question = models.CharField(max_length= 10000)
@@ -15,8 +19,15 @@ class Questions(models.Model):
     required = models.BooleanField(default= False)
     answer_key = models.CharField(max_length = 5000, blank = True)
     score = models.IntegerField(blank = True, default=0)
-    feedback = models.CharField(max_length = 5000, null = True)
+    feedback = models.CharField(max_length = 5000, null = True, blank = True)
     choices = models.ManyToManyField(Choices, related_name = "choices")
+    creation_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.question + ': ' + self.question_type
+
+    class Meta:
+        ordering=['creation_date']
 
 class Answer(models.Model):
     answer = models.CharField(max_length=5000)

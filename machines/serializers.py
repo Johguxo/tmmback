@@ -54,7 +54,7 @@ class InfoSerializer(ModelSerializer):
 
     class Meta:
         model = Info
-        fields = ('id','title','subtitle','content','url_image')
+        fields = ('id','title','subtitle','content','url_image','video_link')
 
     def get_url_image(self, obj):
         url_image = None

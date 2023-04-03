@@ -2,7 +2,7 @@ from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializ
 from rest_framework.fields import SerializerMethodField
 
 from django.contrib.auth.models import User
-from machines.models import Machine, Section, SubSection, Info
+from machines.models import Machine, Section, SubSection, Info, Incidents
 
 
 class MachineSerializer(ModelSerializer):
@@ -56,6 +56,20 @@ class InfoSerializer(ModelSerializer):
         model = Info
         fields = ('id','title','subtitle','content','url_image','video_link')
 
+    def get_url_image(self, obj):
+        url_image = None
+        if obj.image:
+          url_image = f"https://res.cloudinary.com/johguxo-gonzales/{obj.image}"
+        return url_image
+
+class IncidentsSerializer(ModelSerializer):
+    
+    url_image = SerializerMethodField()
+
+    class Meta:
+        model = Incidents
+        fields = ('id','title','subtitle','content','url_image','video_link')
+    
     def get_url_image(self, obj):
         url_image = None
         if obj.image:

@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 
-from machines.models import Machine, Info, UserMachine, Section, SubSection
-from machines.serializers import MachineSerializer, InfoSerializer, SectionSerializer, SubSectionSerializer
+from machines.models import Machine, Info, UserMachine, Section, SubSection, Incidents
+from machines.serializers import MachineSerializer, InfoSerializer, SectionSerializer, SubSectionSerializer, IncidentsSerializer
 
 class MachineAPI(ModelViewSet):
     """
@@ -42,7 +42,9 @@ class SectionAPI(ModelViewSet):
 
     def get_queryset(self):
         if 'id_machine' in self.request.GET:
-            return Section.objects.filter(machine_id=self.request.GET['id_machine'])
+            queryset = Section.objects.filter(machine_id=self.request.GET['id_machine'])
+            print(queryset)
+            return queryset
         return ModelViewSet.get_queryset(self)
 
 class SubSectionAPI(ModelViewSet):
@@ -74,7 +76,17 @@ class InfoAPI(ModelViewSet):
             id_model = self.request.GET['id_model']
             type = self.request.GET['type']
             if type == 'section':
-              return Info.objects.filter(section_id=id_model)
+              query = Info.objects.filter(section_id=id_model)
             else:
-              return Info.objects.filter(subsection_id=id_model)
+              query = Info.objects.filter(subsection_id=id_model)
+            return query
         return ModelViewSet.get_queryset(self)
+
+class IncidentsAPÏ(ModelViewSet):
+    """
+      Get info of incidents
+    """
+    permission_classes = [AllowAny]
+    serializer_class = IncidentsSerializer
+    queryset = Incidents.objects.all()
+    lookup_field = 'id'

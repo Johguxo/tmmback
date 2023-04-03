@@ -61,7 +61,7 @@ class Info(models.Model):
         else:
             return 'No esta asociado'
 
-class IncidentsMachine(models.Model):
+class Incidents(models.Model):
     title = models.CharField(max_length=300, blank=True, default='')
     subtitle = models.CharField(max_length=300, blank=True)
     content = models.TextField(default='')

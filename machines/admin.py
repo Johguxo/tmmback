@@ -1,6 +1,6 @@
 from django.contrib import admin
 from machines.models import (Machine, UserMachine, 
-      Info, Section,SubSection,IncidentsMachine)
+      Info, Section,SubSection,Incidents)
 # Register your models here.
 
 class MachineAdmin(admin.ModelAdmin):
@@ -19,4 +19,4 @@ admin.site.register(UserMachine, UserMachineAdmin)
 admin.site.register(Info, InfoAdmin)
 admin.site.register(Section, SectionAdmin)
 admin.site.register(SubSection, SubSectionAdmin)
-admin.site.register(IncidentsMachine)
+admin.site.register(Incidents)

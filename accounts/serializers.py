@@ -80,3 +80,8 @@ class ProfileSerializer(ModelSerializer):
                 'title': user_machine.machine.title
              })
        return machines
+
+class UserSerializer(ModelSerializer):
+   class Meta:
+      model = User
+      fields = '__all__'

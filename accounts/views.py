@@ -9,7 +9,7 @@ from django.contrib import messages
 
 from django.contrib.auth.models import User
 from accounts.models import Profile
-from accounts.serializers import ProfileSerializer
+from accounts.serializers import ProfileSerializer, UserSerializer
 from .forms import NewUserForm
 
 from rest_framework import status
@@ -38,7 +38,13 @@ class AuthenticateUserAPI(APIView):
           obj_user = User.objects.filter(email=email, is_active=True).last()
           user = authenticate(username=obj_user.username,
                                 password=password)
-          print(user)
+          login(request, user)
+          user_serializer = UserSerializer(obj_user, context=context)
+          succesfull_response = {
+              'user': user_serializer.data,
+              'status': True
+          }
+          return Response(succesfull_response)
         return Response(response_error_dict)
 
 

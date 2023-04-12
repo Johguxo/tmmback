@@ -9,6 +9,7 @@ class Machine(models.Model):
     title = models.CharField(max_length=200,default='')
     description = models.TextField(default='')
     image = CloudinaryField('image')
+    epp = CloudinaryField('epp', blank=True, null=True)
     form = models.ForeignKey(Form,on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):

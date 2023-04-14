@@ -6,8 +6,10 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from .models import Choices, Questions, Answer, Form, Responses
 from .serializers import FormSerializer
@@ -484,6 +486,50 @@ class FormAPI(ModelViewSet):
         return queryset
 
 
+class SubmitFormAPI(APIView):
+    """
+        Post Submit
+    """
+    
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        id_user = request.data['id_user']
+        user = User.objects.get(id=id_user)
+        code = request.data['code']
+        formInfo = Form.objects.filter(code = code)
+        if formInfo.exists():
+            formInfo = formInfo[0]
+            if not Responses.objects.filter(responder=user,
+                                     response_to=formInfo).exists():
+                code = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(20))
+                response = Responses(response_code = code, 
+                                    response_to = formInfo, 
+                                    responder_ip = get_client_ip(request), 
+                                    responder = user)
+                response.save()
+                for dict_response in request.data['responses']:
+                    question = formInfo.questions.get(id=dict_response['id_question'])
+                    answer = Answer(answer=dict_response['answer'],
+                        answer_to=question)
+                    answer.save()
+                    response.response.add(answer)
+                    response.save()
+                response = {
+                    'status': True
+                }
+            else:
+                response = {
+                    'status': False,
+                    'message': 'Ya existe respuestas de este formulario para este usuario'
+                }
+        else:
+            response = {
+                'status': False,
+                'message': 'No se encuentra fomulario'
+            }
+        return Response(response)
+
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
@@ -504,14 +550,22 @@ def submit_form(request, code):
     if request.method == "POST":
         code = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(20))
         if formInfo.authenticated_responder:
-            response = Responses(response_code = code, response_to = formInfo, responder_ip = get_client_ip(request), responder = request.user)
+            response = Responses(response_code = code, 
+                                 response_to = formInfo, 
+                                 responder_ip = get_client_ip(request), 
+                                 responder = request.user)
             response.save()
         else:
             if not formInfo.collect_email:
-                response = Responses(response_code = code, response_to = formInfo, responder_ip = get_client_ip(request))
+                response = Responses(response_code = code, 
+                                     response_to = formInfo, 
+                                     responder_ip = get_client_ip(request))
                 response.save()
             else:
-                response = Responses(response_code = code, response_to = formInfo, responder_ip = get_client_ip(request), responder_email=request.POST["email-address"])
+                response = Responses(response_code = code, 
+                                     response_to = formInfo, 
+                                     responder_ip = get_client_ip(request), 
+                                     responder_email=request.POST["email-address"])
                 response.save()
         for i in request.POST:
             #Excluding csrf token

@@ -31,6 +31,7 @@ urlpatterns = [
     path('<str:code>/viewform', views.view_form, name="view_form"),
     path('<str:code>/full_form', views.FormAPI.as_view({'get': 'retrieve'}), name="full_form"),
     path('<str:code>/submit', views.submit_form, name="submit_form"),
+    path('submit_form', views.SubmitFormAPI.as_view(), name="submit_full_form"),
     path('<str:code>/responses', views.responses, name='responses'),
     path('<str:code>/response/<str:response_code>', views.response, name="response"),
     path('<str:code>/response/<str:response_code>/edit', views.edit_response, name="edit_response"),

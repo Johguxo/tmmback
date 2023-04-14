@@ -19,12 +19,16 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 from oauth2_provider.models import Application, AccessToken
 from oauth2_provider.contrib.rest_framework.authentication import OAuth2Authentication
+from django.views.decorators.csrf import csrf_exempt
+
+
 
 logger = logging.getLogger('login_logger')
 
 class AuthenticateUserAPI(APIView):
     permission_classes = [AllowAny]
 
+    @csrf_exempt
     def post(self, request):
         """ Post method for the authentication of a user """
         context = {'request': request}
@@ -47,7 +51,18 @@ class AuthenticateUserAPI(APIView):
           return Response(succesfull_response)
         return Response(response_error_dict)
 
+class LogoutAPI(APIView):
+    permission_classes = [AllowAny]
 
+    @csrf_exempt
+    def post(self,request):
+        logout(request)
+        succesfull_response = {
+              'status': True
+        }
+        return Response(succesfull_response)
+
+@csrf_exempt
 def register(request):
   """ View function for home page of site """
   
@@ -76,6 +91,7 @@ def register(request):
 
   return render(request, 'register.html', context=context)
 
+@csrf_exempt
 def login_view(request):
     #Check if the user is logged in
     if request.user.is_authenticated:
@@ -94,6 +110,7 @@ def login_view(request):
             })
     return render(request, "index/login.html")
 
+@csrf_exempt
 def register(request):
     #Check if the user is logged in
     if request.user.is_authenticated:
@@ -124,13 +141,14 @@ def register(request):
             })
     return render(request, "index/register.html")
 
-
+@csrf_exempt
 def logout_view(request):
     #Logout the user
+    print(request)
     logout(request)
     return HttpResponseRedirect(reverse('index'))
 
-
+@csrf_exempt
 def home(request):
    return render(request, 'home.html')
 

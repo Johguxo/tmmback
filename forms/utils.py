@@ -6,6 +6,7 @@ import openpyxl
 import requests # request img from web
 import shutil # save img locally
 import smtplib
+from datetime import datetime
 from os.path import basename
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -125,6 +126,12 @@ def excel_responses(code):
                     startcol=2,
                     header=False,
                     index=False)
+  data_tech.to_excel(writer,
+                    sheet_name='Sheet1',
+                    startrow=4,
+                    startcol=1,
+                    header=False,
+                    index=False)
   #Insert data supervisor user
   image = openpyxl.drawing.image.Image(str('forms/static/files/firma_supervisor.png'))
   worksheet.add_image(image,'C48')
@@ -132,6 +139,19 @@ def excel_responses(code):
                     sheet_name='Sheet1',
                     startrow=48,
                     startcol=2,
+                    header=False,
+                    index=False)
+  #Date and Hour
+  now = datetime.now()
+  date_now = now.strftime("%m/%d/%Y")
+  hour_now = now.strftime("%H:%M:%S")
+  turn = 'Tarde'
+  data_time = [date_now, hour_now, turn]
+  df_time = pd.DataFrame(data_time, columns=["time"])
+  df_time.to_excel(writer,
+                    sheet_name='Sheet1',
+                    startrow=4,
+                    startcol=3,
                     header=False,
                     index=False)
   writer.close()

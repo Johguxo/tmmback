@@ -57,7 +57,11 @@ class FormSerializer(ModelSerializer):
         if Responses.objects.filter(responder=user,
                                     response_to=obj,
                                     createdAt__date=today_date.date()).exists():
-          return True
-    return False
+          responses = Responses.objects.filter(responder=user,
+                                    response_to=obj,
+                                    createdAt__date=today_date.date()).last()
+          code = responses.response_code
+          return {'status': True, 'responses_code': code}
+    return {'status': False}
   
     

@@ -144,7 +144,6 @@ def register(request):
 @csrf_exempt
 def logout_view(request):
     #Logout the user
-    print(request)
     logout(request)
     return HttpResponseRedirect(reverse('index'))
 

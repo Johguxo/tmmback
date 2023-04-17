@@ -498,11 +498,14 @@ class SubmitFormAPI(APIView):
         id_user = request.data['id_user']
         user = User.objects.get(id=id_user)
         code = request.data['code']
+        today_date = datetime.now()
         formInfo = Form.objects.filter(code = code)
         if formInfo.exists():
             formInfo = formInfo[0]
-            if not Responses.objects.filter(responder=user,
-                                     response_to=formInfo).exists():
+            query_form = Responses.objects.filter(responder=user,
+                                     response_to=formInfo,
+                                     createdAt__date=today_date.date())
+            if not query_form.exists():
                 code = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(20))
                 response = Responses(response_code = code, 
                                     response_to = formInfo, 
@@ -517,7 +520,8 @@ class SubmitFormAPI(APIView):
                     response.response.add(answer)
                     response.save()
                 response = {
-                    'status': True
+                    'status': True,
+                    'responses_code':  response.code
                 }
             else:
                 response = {

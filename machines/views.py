@@ -43,7 +43,6 @@ class SectionAPI(ModelViewSet):
     def get_queryset(self):
         if 'id_machine' in self.request.GET:
             queryset = Section.objects.filter(machine_id=self.request.GET['id_machine'])
-            print(queryset)
             return queryset
         return ModelViewSet.get_queryset(self)
 

@@ -2,8 +2,8 @@ from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializ
 from rest_framework.fields import SerializerMethodField
 
 from django.contrib.auth.models import User
-from forms.models import Form, Questions, Choices, Responses
-import datetime
+from forms.models import Form, Questions, Choices, Responses, Label
+from datetime import datetime
 
 class ChoicesSerializer(ModelSerializer):
   """
@@ -21,10 +21,18 @@ class QuestionSerializer(ModelSerializer):
   """
   
   choices = ChoicesSerializer(many=True)
+  validate_label = SerializerMethodField()
 
   class Meta:
     model = Questions
     fields = '__all__'
+
+  def get_validate_label(self, obj):
+    validate_label = None
+    first_question = '.1' in obj.question
+    if obj.label and first_question:
+      validate_label = str(obj.label.order) + '.- '+ obj.label.name
+    return validate_label
 
 class FormSerializer(ModelSerializer):
   """
@@ -42,15 +50,13 @@ class FormSerializer(ModelSerializer):
               'createdAt','updatedAt','validate_response')
   
   def get_validate_response(self, obj):
-    today_date = datetime.datetime.today.date()
+    today_date = datetime.now()
     if 'id_user' in self.context['request'].GET:
         id_user = self.context['request'].GET['id_user']
         user = User.objects.get(id=id_user)
         if Responses.objects.filter(responder=user,
-                                    response_to=obj).exists():
-          responses = Responses.objects.filter(responder=user,
-                                    response_to=obj).last()
-          print(today_date, responses.createdAt)
+                                    response_to=obj,
+                                    createdAt__date=today_date.date()).exists():
           return True
     return False
   

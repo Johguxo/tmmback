@@ -521,7 +521,7 @@ class SubmitFormAPI(APIView):
                     response.save()
                 response = {
                     'status': True,
-                    'responses_code':  response.code
+                    'responses_code':  response.response_code
                 }
             else:
                 response = {

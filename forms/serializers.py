@@ -3,7 +3,7 @@ from rest_framework.fields import SerializerMethodField
 
 from django.contrib.auth.models import User
 from forms.models import Form, Questions, Choices, Responses
-
+import datetime
 
 class ChoicesSerializer(ModelSerializer):
   """
@@ -42,11 +42,15 @@ class FormSerializer(ModelSerializer):
               'createdAt','updatedAt','validate_response')
   
   def get_validate_response(self, obj):
+    today_date = datetime.datetime.today.date()
     if 'id_user' in self.context['request'].GET:
         id_user = self.context['request'].GET['id_user']
         user = User.objects.get(id=id_user)
         if Responses.objects.filter(responder=user,
                                     response_to=obj).exists():
+          responses = Responses.objects.filter(responder=user,
+                                    response_to=obj).last()
+          print(today_date, responses.createdAt)
           return True
     return False
   

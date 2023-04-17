@@ -5,6 +5,9 @@ from django.utils import timezone
 
 # Create your models here.
 
+
+
+
 class Choices(models.Model):
     choice = models.CharField(max_length=5000)
     is_answer = models.BooleanField(default=False)
@@ -12,10 +15,21 @@ class Choices(models.Model):
 
     def __str__(self):
         return self.choice
+    
+    class Meta:
+        ordering=['creation_date']
+
+class Label(models.Model):
+    name = models.CharField(max_length=200,default='')
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return '[' + str(self.order) + '] '+ self.name
 
 class Questions(models.Model):
-    question = models.CharField(max_length= 10000)
+    question = models.CharField(max_length=10000)
     question_type = models.CharField(max_length=20)
+    label = models.ForeignKey(Label,on_delete=models.CASCADE,blank=True,null=True)
     required = models.BooleanField(default= False)
     answer_key = models.CharField(max_length = 5000, blank = True)
     score = models.IntegerField(blank = True, default=0)
@@ -24,7 +38,10 @@ class Questions(models.Model):
     creation_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.question + ': ' + self.question_type
+        str_label = 'No tiene etiqueta'
+        if self.label:
+            str_label = self.label.name
+        return '(' + str_label + ') ' + self.question + ': ' + self.question_type
 
     class Meta:
         ordering=['creation_date']
@@ -60,3 +77,4 @@ class Responses(models.Model):
     responder = models.ForeignKey(User, on_delete = models.CASCADE, related_name = "responder", blank = True, null = True)
     responder_email = models.EmailField(blank = True)
     response = models.ManyToManyField(Answer, related_name = "response")
+    createdAt = models.DateTimeField(default=timezone.now)

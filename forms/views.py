@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from .models import Choices, Questions, Answer, Form, Responses
 from .serializers import FormSerializer
+from .utils import excel_responses
 
 from django.core import serializers
 import json
@@ -529,6 +530,17 @@ class SubmitFormAPI(APIView):
                 'message': 'No se encuentra fomulario'
             }
         return Response(response)
+
+class SendResponses(APIView):
+
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        if 'responses_code' in request.data:
+            code = request.data['responses_code']
+            excel_responses(code)
+            return Response({'status': True})
+        return Response({'status': False})
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
